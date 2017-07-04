@@ -56,7 +56,13 @@ public class UploadImg extends HttpServlet {
 		
 		String description = request.getParameter("description");
 		Part filePart = request.getPart("file");
-		String fileName = getSubmittedFileName(filePart);
+		String fileName = " ";
+		try{
+			fileName = getSubmittedFileName(filePart);
+		}catch(NullPointerException e){
+			e.printStackTrace();
+			fileName = filePart.getName();
+		}
 		
 		InputStream inputStream = filePart.getInputStream();
 		
