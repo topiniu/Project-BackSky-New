@@ -99,7 +99,7 @@ public class UntilClass {
         System.out.println(">>> compressed file Canonicalpath= " + compressedImageFile.getCanonicalPath() +
         		"\n>>> compressed file path= " + compressedImageFile.getPath());
         
-        return "http://" + prop.getProperty("_DOMAIN") + "/" + prop.getProperty("_PROJECTNAME") + prop.getProperty("_COMPRESSED_UPLOADIMGFOLDER") + compressedImageFile.getName();
+        return "http://" + prop.getProperty("_DOMAIN") + ":" + prop.getProperty("_PORT")  + "/" + prop.getProperty("_PROJECTNAME") + prop.getProperty("_COMPRESSED_UPLOADIMGFOLDER") + compressedImageFile.getName();
         
     }
 }

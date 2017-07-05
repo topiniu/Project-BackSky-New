@@ -53,6 +53,12 @@ public class UploadImg extends HttpServlet {
 		System.out.println("Fang wen cheng gong");
 
 		response.setHeader("Access-Control-Allow-Origin", "*");
+//		response.setHeader("Access-Control-Allow-Origin", "http://localhost:63342");
+//		response.setHeader("Access-Control-Allow-Credentials", "true");
+//		response.addHeader("Cache-Control", "no-cache");
+//		response.addHeader("Access-Control-Allow-Methods", "GET,POST");
+//		response.addHeader("Access-Control-Allow-Headers", "Content-Type,Accept");
+//		response.addHeader("Access-Control-Max-Age", "1728000");
 		response.setCharacterEncoding("UTF-8");
 
 		Properties prop = new Properties();
@@ -112,7 +118,7 @@ public class UploadImg extends HttpServlet {
 		
 		Map<String, String> map = new HashMap<String,String>();
 
-		map.put("_fullPath", "http://" + prop.getProperty("_DOMAIN") + "/" + prop.getProperty("_PROJECTNAME") + prop.getProperty("_FULL_UPLOADIMGFOLDER") + fileName);
+		map.put("_fullPath", "http://" + prop.getProperty("_DOMAIN") + ":" + prop.getProperty("_PORT") + "/" + prop.getProperty("_PROJECTNAME") + prop.getProperty("_FULL_UPLOADIMGFOLDER") + fileName);
 		map.put("_compressedPath", realPath);
 		
 		Gson gson = new Gson();
