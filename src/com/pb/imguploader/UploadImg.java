@@ -6,11 +6,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -18,6 +22,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+
+import com.google.gson.Gson;
+
+import sun.org.mozilla.javascript.internal.json.JsonParser;
 
 import java.util.Properties;
 
@@ -66,11 +74,14 @@ public class UploadImg extends HttpServlet {
 		
 		InputStream inputStream = filePart.getInputStream();
 		
-		File uploads = new File(prop.getProperty("_FULL_UPLOADIMGFOLDER"));
+		String savePath = getServletContext().getRealPath(prop.getProperty("_FULL_UPLOADIMGFOLDER") + fileName);
+		
+		
+//		File uploads = new File(prop.getProperty("_FULL_UPLOADIMGFOLDER"));
 		System.out.println(prop.getProperty("_FULL_UPLOADIMGFOLDER"));
 		System.out.println(fileName);
 		
-		File file = new File(uploads,fileName);
+		File file = new File(savePath);
 		
 		if(!file.exists()){
 			file.getParentFile().mkdirs();
@@ -87,13 +98,26 @@ public class UploadImg extends HttpServlet {
 		}
 		
 		UntilClass uc = new UntilClass();
+		String realPath = "";
 		try {
-			uc.saveImg(file);
+			realPath = uc.saveImg(file,getServletContext().getRealPath(prop.getProperty("_COMPRESSED_UPLOADIMGFOLDER")));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+		
+		PrintWriter out = response.getWriter();
+//		out.print("Saved");
+		
+		Map<String, String> map = new HashMap<String,String>();
+
+		map.put("_fullPath", "http://" + prop.getProperty("_DOMAIN") + "/" + prop.getProperty("_PROJECTNAME") + prop.getProperty("_FULL_UPLOADIMGFOLDER") + fileName);
+		map.put("_compressedPath", realPath);
+		
+		Gson gson = new Gson();
+		
+		out.print(gson.toJson(map));
 		
 	}
 

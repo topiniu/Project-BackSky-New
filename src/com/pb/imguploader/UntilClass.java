@@ -15,7 +15,7 @@ public class UntilClass {
         
         
     }
-    public String saveImg(File input) throws Exception{
+    public String saveImg(File input,String savePath) throws Exception{
     	System.out.println(">>file name  " + input.getName());
         
         if(input.getName().endsWith("png"))
@@ -29,13 +29,13 @@ public class UntilClass {
             
             
             
-            return new UntilClass().compress(newJpg,newJpg.getName(),input.length());
+            return new UntilClass().compress(newJpg,newJpg.getName(),input.length(),savePath);
         }else{
-            return new UntilClass().compress(input,null,input.length());
+            return new UntilClass().compress(input,null,input.length(),savePath);
         }
     }
     
-    private String compress(File input,String newJpgName,long fullSize) throws Exception{
+    private String compress(File input,String newJpgName,long fullSize,String savePath) throws Exception{
         if(input == null)
             return null;
         
@@ -51,7 +51,7 @@ public class UntilClass {
         
         BufferedImage image = ImageIO.read(is);
         
-        File compressedImageFile = new File(prop.getProperty("_COMPRESSED_UPLOADIMGFOLDER") + input.getName().split("\\.")[0]+".jpg");
+        File compressedImageFile = new File(savePath + "/" + input.getName().split("\\.")[0]+".jpg");
         
         if(!compressedImageFile.exists()){
         	compressedImageFile.getParentFile().mkdirs();
@@ -96,6 +96,10 @@ public class UntilClass {
         os.close();
         ios.close();
         
-        return compressedImageFile.getAbsolutePath();
+        System.out.println(">>> compressed file Canonicalpath= " + compressedImageFile.getCanonicalPath() +
+        		"\n>>> compressed file path= " + compressedImageFile.getPath());
+        
+        return "http://" + prop.getProperty("_DOMAIN") + "/" + prop.getProperty("_PROJECTNAME") + prop.getProperty("_COMPRESSED_UPLOADIMGFOLDER") + compressedImageFile.getName();
+        
     }
 }
