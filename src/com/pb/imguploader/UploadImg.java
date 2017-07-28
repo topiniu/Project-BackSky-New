@@ -50,15 +50,9 @@ public class UploadImg extends HttpServlet {
 	 * @see HttpServlet#service(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("Fang wen cheng gong");
+		System.out.println("Welcome to topiniu's img uploader!");
 
 		response.setHeader("Access-Control-Allow-Origin", "*");
-//		response.setHeader("Access-Control-Allow-Origin", "http://localhost:63342");
-//		response.setHeader("Access-Control-Allow-Credentials", "true");
-//		response.addHeader("Cache-Control", "no-cache");
-//		response.addHeader("Access-Control-Allow-Methods", "GET,POST");
-//		response.addHeader("Access-Control-Allow-Headers", "Content-Type,Accept");
-//		response.addHeader("Access-Control-Max-Age", "1728000");
 		response.setCharacterEncoding("UTF-8");
 
 		Properties prop = new Properties();
@@ -69,7 +63,15 @@ public class UploadImg extends HttpServlet {
 		
 		
 		String description = request.getParameter("description");
+
+		String  data= request.getParameter("data");
+//		System.out.println(data);
+		
+		
 		Part filePart = request.getPart("file");
+		Part dataPart = request.getPart("data");
+//		System.out.println(dataPart);
+		
 		String fileName = " ";
 		try{
 			fileName = getSubmittedFileName(filePart);
@@ -84,8 +86,8 @@ public class UploadImg extends HttpServlet {
 		
 		
 //		File uploads = new File(prop.getProperty("_FULL_UPLOADIMGFOLDER"));
-		System.out.println(prop.getProperty("_FULL_UPLOADIMGFOLDER"));
-		System.out.println(fileName);
+//		System.out.println(prop.getProperty("_FULL_UPLOADIMGFOLDER"));
+//		System.out.println(fileName);
 		
 		File file = new File(savePath);
 		
@@ -117,9 +119,28 @@ public class UploadImg extends HttpServlet {
 //		out.print("Saved");
 		
 		Map<String, String> map = new HashMap<String,String>();
+		String fullPath =  "http://" + prop.getProperty("_DOMAIN") + ":" + prop.getProperty("_PORT") + "/" + prop.getProperty("_PROJECTNAME") + prop.getProperty("_FULL_UPLOADIMGFOLDER") + fileName;
+		String compressPath = realPath;
+		String saveImgListPath = getServletContext().getRealPath(prop.getProperty("_IMGLISTFILENAME"));
+		File q = new File(saveImgListPath);
+		if(!q.exists()){
+			q.getParentFile().mkdirs();
+		}
+		
+		FileTest ft = new FileTest();
+		try {
+//			System.out.println("path=" + saveImgListPath + " prop=" + prop.getProperty("_IMGLISTFILENAME"));
+			ft.writeData(saveImgListPath,fullPath+"&"+compressPath);
+		} catch (Exception e) {
+//			 TODO Auto-generated catch block
+			System.out.println("写入数据失败");
+			e.printStackTrace();
+		}
+		
+		
 
-		map.put("_fullPath", "http://" + prop.getProperty("_DOMAIN") + ":" + prop.getProperty("_PORT") + "/" + prop.getProperty("_PROJECTNAME") + prop.getProperty("_FULL_UPLOADIMGFOLDER") + fileName);
-		map.put("_compressedPath", realPath);
+		map.put("_fullPath",fullPath);
+		map.put("_compressedPath", compressPath);
 		
 		Gson gson = new Gson();
 		
